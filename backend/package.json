@@ -1,0 +1,22 @@
+{
+  "name": "crm-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate --schema ../prisma/schema.prisma",
+    "migrate": "prisma migrate dev --schema ../prisma/schema.prisma",
+    "migrate:deploy": "prisma migrate deploy --schema ../prisma/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}

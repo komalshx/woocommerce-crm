@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// WooCommerce-sourced fields (names, email, billing) are overwritten by sync.
+// CRM-owned data: tags, notes, tasks, communications, templates.
+model Customer {
+  id             Int             @id @default(autoincrement())
+  wooId          Int?            @unique
+  email          String?         @unique // normalized (trimmed, lowercase)
+  firstName      String?
+  lastName       String?
+  phone          String?
+  billing        Json?
+  isGuest        Boolean         @default(false) // created from a guest order
+  source         String          @default("crm") // "crm" | "woocommerce"
+  tags           String[]        @default([])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  orders         Order[]
+  notes          Note[]
+  tasks          Task[]
+  communications Communication[]
+
+  @@index([lastName, firstName])
+  @@index([phone])
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  wooId        Int         @unique
+  number       String
+  status       String
+  currency     String
+  total        Decimal     @db.Decimal(14, 2)
+  billingEmail String?
+  billingName  String?
+  billing      Json?
+  dateCreated  DateTime
+  dateModified DateTime
+  syncedAt     DateTime    @default(now())
+  customerId   Int?
+  customer     Customer?   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  items        OrderItem[]
+
+  @@index([customerId])
+  @@index([status])
+  @@index([dateCreated])
+  @@index([number])
+}
+
+model OrderItem {
+  id       Int     @id @default(autoincrement())
+  orderId  Int
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  wooId    Int?
+  name     String
+  sku      String?
+  quantity Int
+  total    Decimal @db.Decimal(14, 2)
+
+  @@index([orderId])
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  body       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([customerId, createdAt])
+}
+
+model Task {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      String    @default("PENDING") // PENDING | COMPLETED
+  source      String    @default("manual") // manual | agent
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@index([customerId])
+  @@index([status, dueDate])
+}
+
+// status: ATTEMPTED -> ACCEPTED (provider accepted) | FAILED. "Delivered" is not tracked (see README).
+model Communication {
+  id                Int      @id @default(autoincrement())
+  customerId        Int
+  customer          Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type              String   @default("email")
+  subject           String
+  body              String
+  status            String
+  providerMessageId String?
+  error             String?
+  workflow          String?
+  idempotencyKey    String?  @unique
+  createdAt         DateTime @default(now())
+
+  @@index([customerId, createdAt])
+}
+
+model EmailTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  subject   String
+  body      String
+  updatedAt DateTime @updatedAt
+}
+
+model WebhookEvent {
+  id         Int      @id @default(autoincrement())
+  deliveryId String   @unique
+  topic      String
+  status     String // RECEIVED | PROCESSED | IGNORED | FAILED
+  error      String?
+  createdAt  DateTime @default(now())
+}
+
+model SyncState {
+  id              Int       @id
+  status          String    @default("IDLE") // IDLE | SYNCING | COMPLETED | FAILED
+  lastStartedAt   DateTime?
+  lastFinishedAt  DateTime?
+  lastSuccessAt   DateTime?
+  lastError       String?
+  customersSynced Int       @default(0)
+  ordersSynced    Int       @default(0)
+  failedRecords   Int       @default(0)
+}

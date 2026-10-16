@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-page text-navy antialiased; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+:focus-visible { outline: 2px solid #4B5694; outline-offset: 2px; }
+input, select, textarea { @apply w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm; }
+th { @apply px-3 py-2 text-left text-xs font-semibold text-indigo; }
+td { @apply px-3 py-2 text-sm; }
