@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CRM — WooCommerce CRM
 
 A CRM (not a storefront) that syncs customers and orders from WooCommerce, tracks notes, tasks and emails, segments customers by explicit rules, and recommends next steps through a rule-based action agent.
@@ -58,3 +59,7 @@ Qualifying orders: status `completed` or `processing`. Precedence: none → inac
 - shadcn/ui is not installed: the UI uses small hand-written components in `frontend/src/components/ui.jsx` styled with Tailwind and the specified palette.
 - Template editing is available through the API (`/api/communications/templates`) but has no UI screen yet.
 - Not executed against a live database or store in the environment where this was generated.
+=======
+# woocommerce-crm
+WooCommerce CRM with customer management, orders, and insights
+>>>>>>> 11c4bf88ae785843f841869c07515c4bca51136c
