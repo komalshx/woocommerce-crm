@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # CRM — WooCommerce CRM
 
 A CRM (not a storefront) that syncs customers and orders from WooCommerce, tracks notes, tasks and emails, segments customers by explicit rules, and recommends next steps through a rule-based action agent.
@@ -63,3 +64,47 @@ Qualifying orders: status `completed` or `processing`. Precedence: none → inac
 # woocommerce-crm
 WooCommerce CRM with customer management, orders, and insights
 >>>>>>> 11c4bf88ae785843f841869c07515c4bca51136c
+=======
+WooCommerce CRM
+
+A Customer Relationship Management (CRM) application designed to work with WooCommerce.
+
+Features
+
+- Customer management
+- Order viewing and tracking
+- Customer insights and retention tools
+- CRM dashboard
+- WooCommerce integration
+
+Technologies
+
+- Frontend: React and Vite
+- Backend: Node.js and Express
+- Database: PostgreSQL
+- ORM: Prisma
+
+Getting Started
+
+Configure the required environment variables before running the application.
+
+Backend
+
+cd backend
+npm install
+npm run dev
+
+Frontend
+
+Open a separate terminal:
+
+cd frontend
+npm install
+npm run dev
+
+Refer to the project configuration and environment example files for setup details.
+
+Security
+
+Do not commit ".env" files, passwords, API keys, or other credentials to GitHub.
+>>>>>>> 21ccbb96a8ccd95b9e0d8f92dea6bba4c24b164a
